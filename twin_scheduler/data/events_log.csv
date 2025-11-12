@@ -1,0 +1,11 @@
+JobID,Machine,Start,End,Duration
+Job_A,M1,0,6,6
+Job_C,M3,0,7,7
+Job_D,M2,0,8,8
+Job_C,M1,7,11,4
+Job_B,M2,8,13,5
+Job_D,M1,11,16,5
+Job_A,M2,13,17,4
+Job_B,M3,13,19,6
+Job_B,M1,19,22,3
+Job_A,M3,19,24,5

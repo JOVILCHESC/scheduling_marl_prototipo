@@ -1,0 +1,50 @@
+{
+  "simulation_time": 120,
+
+  "machines": [
+    { "id": "M1", "process_time_factor": 1.0 },
+    { "id": "M2", "process_time_factor": 0.9 },
+    { "id": "M3", "process_time_factor": 1.2 }
+  ],
+
+  "jobs": [
+    {
+      "id": "Job_A",
+      "priority": 1,
+      "due_date": 40,
+      "operations": [
+        { "machine": "M1", "duration": 6 },
+        { "machine": "M2", "duration": 4 },
+        { "machine": "M3", "duration": 5 }
+      ]
+    },
+    {
+      "id": "Job_B",
+      "priority": 3,
+      "due_date": 70,
+      "operations": [
+        { "machine": "M2", "duration": 5 },
+        { "machine": "M3", "duration": 6 },
+        { "machine": "M1", "duration": 3 }
+      ]
+    },
+    {
+      "id": "Job_C",
+      "priority": 2,
+      "due_date": 55,
+      "operations": [
+        { "machine": "M3", "duration": 7 },
+        { "machine": "M1", "duration": 4 }
+      ]
+    },
+    {
+      "id": "Job_D",
+      "priority": 1,
+      "due_date": 45,
+      "operations": [
+        { "machine": "M2", "duration": 8 },
+        { "machine": "M1", "duration": 5 }
+      ]
+    }
+  ]
+}
