@@ -110,52 +110,113 @@ pip install -r requirements.txt
 
 Para ejecutar **solo la Fase 1** sin Fase 2:
 
-```bash
+**Windows (CMD):**
+```cmd
 cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
 .venv\Scripts\python.exe simulator_static.py
+```
+
+**Windows (PowerShell):**
+```powershell
+cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
+.\.venv\Scripts\python.exe simulator_static.py
 ```
 
 Esto carga FT06 por defecto y ejecuta validación con SPT, EDD, LPT.
 
 **Salida:** Makespan, Tardanza, Utilización por máquina. Archivos CSV con logs.
 
+---
+
 ### 2️⃣ FASE 2 SOLO (Simulador Dinámico Independiente)
 
 Para ejecutar **solo la Fase 2** con llegadas aleatorias y fallos:
 
-```bash
+**Windows (CMD):**
+```cmd
 cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
 .venv\Scripts\python.exe simulator_dynamic.py
+```
+
+**Windows (PowerShell):**
+```powershell
+cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
+.\.venv\Scripts\python.exe simulator_dynamic.py
 ```
 
 Genera jobs con llegadas Poisson (λ=0.4) y fallos de máquinas (MTBF=100, MTTR=8).
 
 **Salida:** Eventos de llegada/falla/reparación, downtime, disponibilidad. Archivos CSV.
 
+---
+
 ### 3️⃣ COMPARACIÓN COMPLETA (Fase 1 + Fase 2 con datos Taillard)
 
 Para ejecutar **ambas fases juntas** con los mismos datos y obtener reporte comparativo:
 
-```bash
-cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
-.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison
+**Método recomendado (con configuración UTF-8 automática):**
+
+**Windows (CMD):**
+```cmd
+cd c:\DEV\scheduling_marl_prototipo
+run_comparison.cmd --rules SPT,EDD --dataset TA:datasets/jobshop1.txt:1
 ```
 
-**Parámetros opcionales:**
+**Windows (PowerShell):**
+```powershell
+cd c:\DEV\scheduling_marl_prototipo
+.\run_comparison.ps1 -Arguments "--rules SPT,EDD --dataset TA:datasets/jobshop1.txt:1"
+```
+
+**Alternativa directa (requiere PYTHONIOENCODING):**
+
+```cmd
+set PYTHONIOENCODING=utf-8
+cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
+.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --rules SPT,EDD
+```
+
+---
+
+**Parámetros opcionales para main_comparison.py:**
 
 ```bash
 # Usar una instancia Taillard diferente
-.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --dataset TA:datasets/jobshop1.txt:abz5 --rules SPT,EDD
+--dataset TA:datasets/jobshop1.txt:abz5
+
+# Especificar reglas
+--rules SPT,EDD,LPT
 
 # Cambiar MTBF y MTTR de Fase 2
-.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --mtbf 200 --mttr 15
+--mtbf 200 --mttr 15
 
 # Cambiar distribución de llegadas escalonadas
-.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --arrival-dist poisson
+--arrival-dist poisson
 ```
 
-**Salida:** Tabla comparativa CSV con columnas:
+**Ejemplo completo:**
+```cmd
+run_comparison.cmd --dataset TA:datasets/jobshop1.txt:ft06 --rules SPT --mtbf 150 --mttr 10
+```
+
+**Salida:** Tabla comparativa CSV + pantalla con columnas:
 - Regla | Makespan F1 | Makespan F2 | Delta Makespan | Tardanza F1 | Tardanza F2 | Delta Tardanza | Jobs Completados F2 | Downtime F2 | Disponibilidad F2
+
+**Ejemplo de Salida:**
+```
+Regla | Makespan F1 | Makespan F2 | Delta Makespan | Tardanza F1 | Tardanza F2 | Delta Tardanza | Jobs Compl. F2 | Downtime F2 (u.t.) | Disponibilidad F2
+------|-------------|-------------|----------------|-------------|-------------|----------------|----------------|--------------------|------------------
+ SPT  |    1376.0   |    1467.0   |  +91.0 (+6.6%)  |    628.0    |    178.5    | -449.5 (-71.6%) |       10       |      14257.1       |      93.9%
+```
+
+---
+
+### Notas Importantes
+
+- **Windows CP1252 encoding**: Los scripts `run_comparison.cmd` y `run_comparison.ps1` establecen automáticamente UTF-8 para evitar errores de codificación.
+- **Taillard datasets**: Contiene ~80 instancias. Úsalo así: `TA:datasets/jobshop1.txt:NOMBRE_O_INDICE`
+- **Fase 1 = Determinístico**: Sin fallos, sin llegadas dinámicas, orden fijo.
+- **Fase 2 = Estocástico**: Con fallos (MTBF/MTTR), llegadas escalonadas, dinámico.
 
 ---
 
