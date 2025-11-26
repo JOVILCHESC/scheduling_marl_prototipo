@@ -4,6 +4,8 @@ Incluye: FT06, FT10, y funciones para cargar datos.
 """
 
 from typing import List, Tuple, Dict
+from typing import Optional
+from .taillard_loader import load_taillard_file
 
 
 class Datasets:
@@ -99,8 +101,32 @@ class Datasets:
         Raises:
             ValueError: Si el dataset no existe
         """
-        dataset_name = dataset_name.upper()
-        
+        original = dataset_name
+        if isinstance(original, str) and original.upper().startswith("TA:"):
+            # Formato: TA:<path_or_filename>[:instanceName_or_index]
+            # Ejemplos:
+            #  TA:datasets/jobshop1.txt:abz5
+            #  TA:datasets/jobshop1.txt:1
+            parts = original.split(':', 2)
+            # parts[0] == 'TA'
+            if len(parts) < 2 or not parts[1]:
+                raise ValueError("Formato TA inválido. Use 'TA:<file_path>[:instanceName_or_index]'")
+            path = parts[1]
+            instance = None
+            index = 1
+            if len(parts) == 3 and parts[2]:
+                # si es dígito, tratar como índice
+                if parts[2].isdigit():
+                    index = int(parts[2])
+                else:
+                    instance = parts[2]
+
+            jobs, due_dates = load_taillard_file(path, instance_name=instance, instance_index=index)
+            return jobs, due_dates
+
+        # No es TA:, trabajar con mayúsculas para los datasets integrados
+        dataset_name = str(original).upper()
+
         if dataset_name == "FT06":
             return Datasets.load_ft06()
         elif dataset_name == "FT10":
@@ -108,7 +134,7 @@ class Datasets:
         else:
             available = ", ".join(Datasets.get_available_datasets().keys())
             raise ValueError(
-                f"Dataset '{dataset_name}' no encontrado. "
+                f"Dataset '{original}' no encontrado. "
                 f"Datasets disponibles: {available}"
             )
     

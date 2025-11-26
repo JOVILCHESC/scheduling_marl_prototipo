@@ -18,9 +18,9 @@ import os
 from datetime import datetime
 from typing import List, Tuple, Dict
 
-from metrics import MetricsCalculator
-from scheduling_rules import SchedulingRules
-from datasets import Datasets
+from .metrics import MetricsCalculator
+from .scheduling_rules import SchedulingRules
+from .datasets import Datasets
 
 
 class Machine:

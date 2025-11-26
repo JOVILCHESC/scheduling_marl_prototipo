@@ -1,8 +1,12 @@
-# 🏭 Twin Scheduler SimPy - FASE 1: Simulador Base Estático
+# 🏭 Twin Scheduler SimPy - FASE 1 + FASE 2
 
 ## Descripción General
 
-Este es el **simulador base (entorno estático)** para el Job Shop Scheduling Problem usando SimPy. Implementa un ambiente determinístico con máquinas, trabajos y colas (buffers) para simular y analizar el desempeño de diferentes reglas de despacho.
+Proyecto integrado de simulación Job Shop con dos fases:
+- **Fase 1 (Estático)**: Simulador determinístico con reglas de despacho heurísticas (SPT, EDD, LPT)
+- **Fase 2 (Dinámico)**: Simulador con llegadas dinámicas, fallos de máquinas y reparaciones
+
+Ambas fases pueden ejecutarse **independientemente** o en **comparación directa** usando instancias Taillard como datos compartidos.
 
 ### Características Implementadas (Fase 1)
 
@@ -37,15 +41,38 @@ Este es el **simulador base (entorno estático)** para el Job Shop Scheduling Pr
 
 ```
 twin_scheduler_simpy/
-├── simulator_static.py          # 🎯 Simulador principal
-├── metrics.py                    # 📊 Cálculo de métricas
-├── scheduling_rules.py           # 📋 Reglas de despacho (SPT, EDD, LPT)
-├── datasets.py                   # 📦 Datasets de benchmark
-├── __init__.py                   # Módulo inicializador
-├── requirements.txt              # Dependencias Python
-├── README.md                     # Este archivo
-├── simulator_static_old.py       # Backup del código anterior
-└── venv/                         # Entorno virtual Python
+├── FASE 1: Simulador Estático
+│   ├── simulator_static.py          # Simulador principal
+│   ├── metrics.py                    # Cálculo de métricas
+│   ├── scheduling_rules.py           # Reglas de despacho (SPT, EDD, LPT)
+│   ├── datasets.py                   # Loader de datasets (FT06, FT10, Taillard)
+│
+├── FASE 2: Simulador Dinámico
+│   ├── simulator_dynamic.py          # Simulador con llegadas y fallos
+│   ├── arrival_generator.py          # Generador de llegadas (Poisson)
+│   ├── machine_failures.py           # Gestor de fallos (MTBF/MTTR)
+│   ├── event_manager.py              # Logger centralizado de eventos
+│
+├── Integración y Comparación
+│   ├── main_comparison.py            # Script de comparación Fase 1 vs Fase 2
+│   ├── taillard_integration.py       # Conversor Taillard -> llegadas escalonadas
+│   ├── taillard_loader.py            # Parser de instancias Taillard
+│
+├── Datos y Documentación
+│   ├── datasets/
+│   │   ├── jobshop1.txt              # Instancias Taillard (abz5-abz9, ft06, ft10, etc.)
+│   │   └── jobshop2.txt              # Más instancias Taillard
+│   ├── logs/                         # Logs y CSVs de simulaciones
+│   ├── README.md                     # Este archivo
+│   ├── PHASE1_SUMMARY.txt            # Resumen de Fase 1
+│   ├── PHASE2_SUMMARY.txt            # Resumen de Fase 2
+│
+├── Infraestructura
+│   ├── __init__.py                   # Módulo inicializador
+│   ├── requirements.txt              # Dependencias Python
+│   ├── venv/                         # Entorno virtual Python
+│   └── tests/                        # Pruebas rápidas
+│       └── test_taillard_load_and_run.py
 ```
 
 ---
@@ -75,68 +102,153 @@ pip install -r requirements.txt
 
 ---
 
-## Uso
+---
 
-### Ejecución Rápida (Validación Completa)
+## Uso: Tres Modos de Ejecución
+
+### 1️⃣ FASE 1 SOLO (Simulador Estático Independiente)
+
+Para ejecutar **solo la Fase 1** sin Fase 2:
 
 ```bash
-python simulator_static.py
+cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
+.venv\Scripts\python.exe simulator_static.py
 ```
 
-Esto ejecutará una validación completa que:
-1. Carga el dataset FT06
-2. Ejecuta simulaciones con las 3 reglas (SPT, EDD, LPT)
-3. Compara métricas y resultados
-4. Genera archivos CSV con logs y resultados
+Esto carga FT06 por defecto y ejecuta validación con SPT, EDD, LPT.
 
-**Salida esperada:**
-```
-======================================================================
-📊 VALIDACIÓN DEL SIMULADOR BASE
-======================================================================
+**Salida:** Makespan, Tardanza, Utilización por máquina. Archivos CSV con logs.
 
-Ejecutando simulación con regla SPT...
-[...]
-Ejecutando simulación con regla EDD...
-[...]
-Ejecutando simulación con regla LPT...
-[...]
+### 2️⃣ FASE 2 SOLO (Simulador Dinámico Independiente)
 
-======================================================================
-📈 COMPARACIÓN DE REGLAS
-======================================================================
+Para ejecutar **solo la Fase 2** con llegadas aleatorias y fallos:
 
-Regla Makespan Tardanza Total Tardanza Promedio  VIP Utilización %
-  SPT    49.00          29.00              4.83 0.12         67.01
-  EDD    49.00          29.00              4.83 0.12         67.01
-  LPT    49.00          29.00              4.83 0.12         67.01
+```bash
+cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
+.venv\Scripts\python.exe simulator_dynamic.py
 ```
 
-### Uso Programático
+Genera jobs con llegadas Poisson (λ=0.4) y fallos de máquinas (MTBF=100, MTTR=8).
+
+**Salida:** Eventos de llegada/falla/reparación, downtime, disponibilidad. Archivos CSV.
+
+### 3️⃣ COMPARACIÓN COMPLETA (Fase 1 + Fase 2 con datos Taillard)
+
+Para ejecutar **ambas fases juntas** con los mismos datos y obtener reporte comparativo:
+
+```bash
+cd c:\DEV\scheduling_marl_prototipo\twin_scheduler_simpy
+.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison
+```
+
+**Parámetros opcionales:**
+
+```bash
+# Usar una instancia Taillard diferente
+.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --dataset TA:datasets/jobshop1.txt:abz5 --rules SPT,EDD
+
+# Cambiar MTBF y MTTR de Fase 2
+.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --mtbf 200 --mttr 15
+
+# Cambiar distribución de llegadas escalonadas
+.venv\Scripts\python.exe -m twin_scheduler_simpy.main_comparison --arrival-dist poisson
+```
+
+**Salida:** Tabla comparativa CSV con columnas:
+- Regla | Makespan F1 | Makespan F2 | Delta Makespan | Tardanza F1 | Tardanza F2 | Delta Tardanza | Jobs Completados F2 | Downtime F2 | Disponibilidad F2
+
+---
+
+## Datasets Disponibles
+
+### Datasets Integrados (Fase 1)
+- **FT06**: 6 jobs × 6 máquinas (muy rápido)
+- **FT10**: 10 jobs × 10 máquinas (rápido)
+
+Uso:
+```python
+from datasets import Datasets
+jobs, due_dates = Datasets.load_dataset("FT06")
+jobs, due_dates = Datasets.load_dataset("FT10")
+```
+
+### Instancias Taillard (Fase 1 + Fase 2)
+Archivos: `datasets/jobshop1.txt`, `datasets/jobshop2.txt`
+
+Contienen ~80 instancias: abz5-abz9, ft06, ft10, ft20, la01-la40, orb01-orb10, swv01-swv20, yn1-yn4, ta01-ta80
+
+Uso:
+```python
+from datasets import Datasets
+
+# Cargar por índice (1-based)
+jobs, due_dates = Datasets.load_dataset("TA:datasets/jobshop1.txt:1")     # Primera instancia
+
+# Cargar por nombre
+jobs, due_dates = Datasets.load_dataset("TA:datasets/jobshop1.txt:abz5")  # Instancia abz5
+jobs, due_dates = Datasets.load_dataset("TA:datasets/jobshop1.txt:ft06")  # Instancia ft06
+
+# En Fase 2 (comparación)
+python main_comparison.py --dataset TA:datasets/jobshop1.txt:abz5
+```
+
+---
+
+## Uso Programático
+
+### Fase 1 (Estático)
 
 ```python
 from simulator_static import run_simulation, run_validation
 from datasets import Datasets
 
-# Opción 1: Validación completa
+# Validación completa con FT06
 results = run_validation(dataset_name="FT06", verbose=False)
 
-# Opción 2: Simulación individual
-jobs_data, due_dates = Datasets.load_dataset("FT06")
-result = run_simulation(
-    jobs_data, 
-    due_dates, 
-    rule="SPT",
-    dataset_name="FT06",
-    verbose=True,
-    export_log=True
-)
-
-# Acceder a métricas
-metrics = result["metrics"]
-print(f"Makespan: {metrics['makespan']}")
-print(f"Utilización: {metrics['utilization_average']:.2f}%")
+# Simulación individual
+jobs, due_dates = Datasets.load_dataset("FT06")
+result = run_simulation(jobs, due_dates, rule="SPT", verbose=True)
+print(result["metrics"]["makespan"])
 ```
+
+### Fase 2 (Dinámico)
+
+```python
+import simpy
+from simulator_dynamic import DynamicJobShopSimulator
+
+env = simpy.Environment()
+sim = DynamicJobShopSimulator(
+    env=env,
+    num_machines=6,
+    arrival_rate=0.4,
+    mtbf=100.0,
+    mttr=8.0,
+    scheduling_rule="SPT"
+)
+sim.run(until_time=1000.0)
+sim.export_results()
+```
+
+### Comparación (Ambas Fases)
+
+```python
+from main_comparison import run_phase1_batch, run_phase2_batch, generate_comparison_report
+from datasets import Datasets
+
+jobs, due_dates = Datasets.load_dataset("TA:datasets/jobshop1.txt:1")
+
+# Fase 1
+results_f1 = run_phase1_batch(jobs, due_dates, ["SPT", "EDD"])
+
+# Fase 2
+results_f2 = run_phase2_batch(jobs, due_dates, ["SPT", "EDD"])
+
+# Reporte
+df = generate_comparison_report(results_f1, results_f2, ["SPT", "EDD"])
+print(df)
+```
+
 
 ---
 

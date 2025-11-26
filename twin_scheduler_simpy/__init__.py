@@ -15,11 +15,11 @@ __version__ = "1.0.0"
 __author__ = "JOVILCHESC"
 __description__ = "Job Shop Scheduler Simulator - Static Environment"
 
-from metrics import MetricsCalculator
-from scheduling_rules import SchedulingRules
-from datasets import Datasets
-from simulator_static import (
-    Machine, Job, job_process, run_simulation, run_validation
+from .metrics import MetricsCalculator
+from .scheduling_rules import SchedulingRules
+from .datasets import Datasets
+from .simulator_static import (
+  Machine, Job, job_process, run_simulation, run_validation
 )
 
 __all__ = [
