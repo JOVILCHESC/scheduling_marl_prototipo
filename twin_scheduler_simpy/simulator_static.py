@@ -96,7 +96,7 @@ def job_process(env: simpy.Environment, job: Job, machines: List[Machine],
             
             if verbose:
                 queue_size = len(machine.queue)
-                print(f"[{env.now:6.1f}] ⚙️  Job {job.id:2d} Operación {op_idx} en Máquina {machine_id} "
+                print(f"[{env.now:6.1f}] [START] Job {job.id:2d} Op {op_idx} Maq {machine_id} "
                       f"({duration} u.t.) [Cola: {queue_size}]")
             
             # Procesar
@@ -106,8 +106,7 @@ def job_process(env: simpy.Environment, job: Job, machines: List[Machine],
             log.append([env.now, "finish", job.id, machine_id])
             
             if verbose:
-                print(f"[{env.now:6.1f}] ✓ Job {job.id:2d} Operación {op_idx} completada en "
-                      f"Máquina {machine_id}")
+                print(f"[{env.now:6.1f}] [FINISH] Job {job.id:2d} Op {op_idx} Maq {machine_id} completada")
     
     job.completion_time = env.now
 
@@ -215,7 +214,7 @@ def run_validation(dataset_name: str = "FT06", verbose: bool = False):
     results = []
     
     print(f"\n{'='*70}")
-    print(f"📊 VALIDACIÓN DEL SIMULADOR BASE")
+    print("[VALIDATION] BASE SIMULATOR VALIDATION")
     print(f"{'='*70}\n")
     
     for rule in rules:
@@ -236,7 +235,7 @@ def run_validation(dataset_name: str = "FT06", verbose: bool = False):
     
     # === COMPARACIÓN DE RESULTADOS ===
     print(f"\n{'='*70}")
-    print(f"📈 COMPARACIÓN DE REGLAS")
+    print("[COMPARISON] RULES COMPARISON")
     print(f"{'='*70}\n")
     
     comparison_data = []

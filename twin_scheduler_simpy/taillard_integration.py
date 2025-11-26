@@ -6,8 +6,13 @@ Proporciona funciones para convertir instancias Taillard en llegadas escalonadas
 entre Fase 1 (estático) y Fase 2 (dinámico) usando los mismos datos.
 """
 from typing import List, Tuple, Dict, Optional
-from arrival_generator import JobSpec
 import numpy as np
+
+# Intentar imports relativos; si falla, usar imports directos
+try:
+    from .arrival_generator import JobSpec
+except ImportError:
+    from arrival_generator import JobSpec
 
 
 def convert_taillard_to_staggered_arrivals(

@@ -25,10 +25,18 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from .datasets import Datasets
-from .simulator_static import run_simulation
-from .taillard_integration import convert_taillard_to_staggered_arrivals, print_staggered_arrivals
-from .simulator_dynamic import DynamicJobShopSimulator
+# Intentar imports relativos; si falla, usar imports directos
+try:
+    from .datasets import Datasets
+    from .simulator_static import run_simulation
+    from .taillard_integration import convert_taillard_to_staggered_arrivals, print_staggered_arrivals
+    from .simulator_dynamic import DynamicJobShopSimulator
+except ImportError:
+    from datasets import Datasets
+    from simulator_static import run_simulation
+    from taillard_integration import convert_taillard_to_staggered_arrivals, print_staggered_arrivals
+    from simulator_dynamic import DynamicJobShopSimulator
+
 import simpy
 
 
@@ -65,7 +73,9 @@ def run_phase1_batch(
             print(f"[FASE 1] {rule}: OK - Makespan={result['metrics']['makespan']:.1f}, "
                   f"Tardanza={result['metrics']['tardiness_total']:.1f}")
         except Exception as e:
+            import traceback
             print(f"[FASE 1] {rule}: ERROR - {e}")
+            traceback.print_exc()
             results_phase1[rule] = None
     
     return results_phase1
@@ -133,12 +143,9 @@ def run_phase2_batch(
             
             # Recolectar métricas
             metrics = {
-                'makespan': max([j['completion_time'] for j in simulator.jobs_completed.values()],
-                               default=0) if simulator.jobs_completed else 0,
-                'tardiness_total': sum([j['tardiness'] for j in simulator.jobs_completed.values()],
-                                      default=0),
-                'tardiness_average': np.mean([j['tardiness'] for j in simulator.jobs_completed.values()],
-                                            dtype=float) if simulator.jobs_completed else 0,
+                'makespan': max([j['completion_time'] for j in simulator.jobs_completed.values()]) if simulator.jobs_completed else 0,
+                'tardiness_total': sum([j['tardiness'] for j in simulator.jobs_completed.values()]) if simulator.jobs_completed else 0,
+                'tardiness_average': np.mean([j['tardiness'] for j in simulator.jobs_completed.values()]) if simulator.jobs_completed else 0,
                 'jobs_completed': len(simulator.jobs_completed),
                 'total_events': len(simulator.event_manager.events),
                 'total_downtime': sum([

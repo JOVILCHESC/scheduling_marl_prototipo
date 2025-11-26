@@ -154,9 +154,9 @@ class MetricsCalculator:
         
         print(f"\n{'='*70}")
         if rule_name:
-            print(f"📊 MÉTRICAS - REGLA: {rule_name}")
+            print(f"[METRICS] METRICS - RULE: {rule_name}")
         else:
-            print(f"📊 MÉTRICAS DEL SIMULADOR")
+            print(f"[METRICS] SIMULATOR METRICS")
         print(f"{'='*70}")
         print(f"Makespan (tiempo total):          {metrics['makespan']:10.2f} u.t.")
         print(f"Tardanza total:                   {metrics['tardiness_total']:10.2f} u.t.")

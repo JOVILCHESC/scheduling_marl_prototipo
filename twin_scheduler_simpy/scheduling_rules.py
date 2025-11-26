@@ -132,7 +132,7 @@ class SchedulingRules:
         Imprime un reporte formateado del orden de despacho.
         """
         print(f"\n{'='*70}")
-        print(f"📋 REGLA DE DESPACHO: {rule_name.upper()}")
+        print(f"[SCHEDULE] REGLA DE DESPACHO: {rule_name.upper()}")
         print(f"{'='*70}")
         
         print(f"\nOrden de ejecución:")

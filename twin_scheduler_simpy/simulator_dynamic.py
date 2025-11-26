@@ -17,12 +17,15 @@ from datetime import datetime
 from typing import List, Tuple, Dict, Optional
 import numpy as np
 
-from arrival_generator import ArrivalGenerator, JobSpec
-from machine_failures import MachineFailureManager, MachineFailureEvent, ReliabilityProfile
-from event_manager import EventManager, EventType
-# from metrics import MetricsCalculator
-# from scheduling_rules import SchedulingRules
-# from datasets import Datasets
+# Intentar imports relativos; si falla, usar imports directos
+try:
+    from .arrival_generator import ArrivalGenerator, JobSpec
+    from .machine_failures import MachineFailureManager, MachineFailureEvent, ReliabilityProfile
+    from .event_manager import EventManager, EventType
+except ImportError:
+    from arrival_generator import ArrivalGenerator, JobSpec
+    from machine_failures import MachineFailureManager, MachineFailureEvent, ReliabilityProfile
+    from event_manager import EventManager, EventType
 
 
 class DynamicMachine:
