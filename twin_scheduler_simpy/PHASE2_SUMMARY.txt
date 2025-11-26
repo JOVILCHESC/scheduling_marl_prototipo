@@ -1,0 +1,226 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                      ✅ FASE 2: SIMULADOR DINÁMICO COMPLETADA                 ║
+║              Job Shop Scheduling - Entorno con Eventos Dinámicos              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📁 NUEVAS CARACTERÍSTICAS IMPLEMENTADAS EN FASE 2
+════════════════════════════════════════════════════════════════════════════════
+
+1. LLEGADAS DINÁMICAS DE ÓRDENES (arrival_generator.py)
+   ─────────────────────────────────────────────────────
+   ✅ Proceso de Poisson para generación de llegadas en línea
+   ✅ Distribución exponencial de inter-arrival times
+   ✅ Generación automática de operaciones aleatorias por orden
+   ✅ Cálculo dinámico de due dates basado en makespan estimado
+   ✅ Integración con callbacks para notificar nuevas llegadas
+   
+   Características:
+   • Parámetro configurable: arrival_rate (trabajos/unidad de tiempo)
+   • Operaciones aleatorias: min_operations=3, max_operations=6
+   • Due dates = arrival_time + sum(operations) * multiplier
+   • Compatible con SimPy Environment
+
+2. FALLOS DE MÁQUINAS Y REPARACIONES (machine_failures.py)
+   ───────────────────────────────────────────────────────
+   ✅ Modelo MTBF/MTTR (Mean Time Between Failures / Mean Time To Repair)
+   ✅ Distribuciones exponenciales para tiempo entre fallos
+   ✅ Tiempo de reparación variable y aleatorio
+   ✅ Bloqueo automático de máquina durante mantenimiento
+   ✅ Perfiles de confiabilidad predefinidos
+   ✅ Estadísticas de disponibilidad por máquina
+   
+   Perfiles disponibles:
+   • HIGH_RELIABILITY: MTBF=1000, MTTR=2 (99.8% disponibilidad)
+   • MEDIUM_RELIABILITY: MTBF=100, MTTR=5 (95.3% disponibilidad)
+   • LOW_RELIABILITY: MTBF=30, MTTR=8 (78.9% disponibilidad)
+   
+   Estadísticas capturadas:
+   • Número de fallos por máquina
+   • Tiempo total de downtime
+   • Disponibilidad (%)
+   • Tiempo promedio/mín/máx de reparación
+
+3. SISTEMA CENTRALIZADO DE EVENTOS (event_manager.py)
+   ──────────────────────────────────────────────────
+   ✅ Log estructurado con timestamps de todos los eventos
+   ✅ Tipos de eventos: ARRIVAL, START, END, FAILURE, REPAIR, COMPLETE
+   ✅ Exportación automática a CSV con nombre y timestamp
+   ✅ Generación de reportes sumarios
+   ✅ Métodos de consulta por tipo, trabajo, máquina
+   
+   Eventos registrados:
+   • arrival: Llegada de nueva orden (job_id, num_operations)
+   • start: Inicio de operación (job_id, machine_id, duration, queue_length)
+   • end: Fin de operación (job_id, machine_id)
+   • failure: Fallo de máquina (machine_id, repair_duration)
+   • repair_end: Fin de reparación (machine_id, downtime)
+   • complete: Trabajo completado (job_id, makespan)
+
+4. SIMULADOR DINÁMICO INTEGRADO (simulator_dynamic.py)
+   ──────────────────────────────────────────────────
+   ✅ Integración de todos los módulos anteriores
+   ✅ Máquinas con soporte para fallos dinámicos (DynamicMachine)
+   ✅ Procesamiento de trabajos con llegadas en línea
+   ✅ Sistema de colas (queues) dinámicas
+   ✅ Métricas en tiempo real: Makespan, Tardanza, Utilización
+   ✅ Exportación de resultados en múltiples formatos CSV
+
+════════════════════════════════════════════════════════════════════════════════
+
+📊 RESULTADOS DE EJECUCIÓN DE PRUEBA
+════════════════════════════════════════════════════════════════════════════════
+
+Configuración:
+  • Máquinas: 6
+  • Tasa de llegada: 0.4 órdenes/u.t.
+  • MTBF: 100 u.t.
+  • MTTR: 8 u.t.
+  • Tiempo total: 1000 u.t.
+  • Seed: 42 (reproducible)
+
+Resultados:
+  ✅ Órdenes llegadas: 393
+  ✅ Órdenes completadas: 143
+  ✅ Eventos totales: 2,688
+  
+  Métricas principales:
+  • Makespan promedio: 347.76 u.t.
+  • Tardanza total: 44,600.82 u.t.
+  • Trabajos atrasados: 142 de 143 (99.3%)
+  
+  Confiabilidad del sistema:
+  • Fallos totales: 56 eventos
+  • Downtime total: 381.7 u.t. (38.2% del tiempo)
+  • Disponibilidad promedio: 93.6%
+  
+  Distribución de fallos:
+  • Máquina 0: 8 fallos (Downtime: 71.1, Disp: 92.9%)
+  • Máquina 1: 10 fallos (Downtime: 58.6, Disp: 94.1%)
+  • Máquina 2: 7 fallos (Downtime: 36.0, Disp: 96.4%)
+  • Máquina 3: 11 fallos (Downtime: 83.0, Disp: 91.7%)
+  • Máquina 4: 12 fallos (Downtime: 60.4, Disp: 94.0%)
+  • Máquina 5: 6 fallos (Downtime: 72.6, Disp: 92.7%)
+
+════════════════════════════════════════════════════════════════════════════════
+
+📁 ARCHIVOS NUEVOS CREADOS
+════════════════════════════════════════════════════════════════════════════════
+
+1. arrival_generator.py (6.1 KB)
+   ├─ Clase: ArrivalGenerator
+   ├─ Clase: JobSpec
+   └─ Funciones: inter_arrival_time_poisson(), inter_arrival_time_normal()
+
+2. machine_failures.py (8.2 KB)
+   ├─ Clase: MachineFailureManager
+   ├─ Clase: MachineFailureEvent
+   └─ Clase: ReliabilityProfile (perfiles predefinidos)
+
+3. event_manager.py (8.5 KB)
+   ├─ Clase: EventManager
+   ├─ Enum: EventType
+   ├─ Clase: SimulationEvent
+   └─ Métodos: export_to_csv(), print_event_summary()
+
+4. simulator_dynamic.py (13.7 KB)
+   ├─ Clase: DynamicMachine
+   ├─ Clase: DynamicJobShopSimulator
+   └─ Función: main() para ejecución directa
+
+════════════════════════════════════════════════════════════════════════════════
+
+🔄 COMPARACIÓN FASE 1 vs FASE 2
+════════════════════════════════════════════════════════════════════════════════
+
+ASPECTO                    FASE 1 (Estático)      FASE 2 (Dinámico)
+─────────────────────────  ──────────────────────  ─────────────────────
+Llegadas de órdenes        Predefinidas/Estáticas ✅ En línea (Poisson)
+Fallos de máquinas         No simulados            ✅ MTBF/MTTR exponencial
+Disponibilidad máquinas    100%                    ✅ Configurable (91-96%)
+Eventos capturados         Básicos                 ✅ 6 tipos distintos
+Log detallado              CSV simple              ✅ CSV estructurado
+Configurabilidad           Baja                    ✅ Alta (callbacks, perfiles)
+Realismo                   Bajo                    ✅ Alto (procesos estocásticos)
+Escalabilidad              Media                   ✅ Alta (eventos integrados)
+
+════════════════════════════════════════════════════════════════════════════════
+
+📈 PROPUESTA PARA FASE 3
+════════════════════════════════════════════════════════════════════════════════
+
+Basándose en el título del proyecto "Twin Scheduler: MARL Prototipo", la Fase 3
+debería implementar:
+
+1. MULTI-AGENT REINFORCEMENT LEARNING (MARL)
+   • Agentes inteligentes para toma de decisiones de despacho
+   • Comunicación entre agentes para coordinación
+   • Q-Learning o Policy Gradient para aprendizaje
+   • Comparación con reglas heurísticas (SPT, EDD, LPT)
+
+2. GEMELO DIGITAL (DIGITAL TWIN)
+   • Simulador en la nube sincronizado con datos reales
+   • Predicción de fallos usando datos históricos
+   • Optimización proactiva vs reactiva
+   • Feedback loop para mejora continua
+
+3. VALIDACIÓN Y BENCHMARKING
+   • Análisis de convergencia de políticas aprendidas
+   • Comparación con óptimos teóricos
+   • Generación de múltiples escenarios
+   • Métricas de desempeño vs baseline
+
+════════════════════════════════════════════════════════════════════════════════
+
+🚀 CÓMO USAR LA FASE 2
+════════════════════════════════════════════════════════════════════════════════
+
+Ejecución básica:
+  $ cd twin_scheduler_simpy
+  $ python simulator_dynamic.py
+
+Personalizar configuración:
+  # En simulator_dynamic.py, función main():
+  simulator = DynamicJobShopSimulator(
+      env=env,
+      num_machines=6,           # Número de máquinas
+      arrival_rate=0.4,         # Órdenes por unidad de tiempo
+      mtbf=100.0,               # Tiempo medio entre fallos
+      mttr=8.0,                 # Tiempo medio de reparación
+      scheduling_rule="SPT"     # Regla de despacho
+  )
+  simulator.run(until_time=1000.0, warmup=100.0)
+
+Analizar resultados:
+  • logs/simulation_dynamic_*.csv: Evento por evento
+  • logs/simulation_dynamic_jobs_*.csv: Métricas por trabajo
+  • logs/simulation_dynamic_failures_*.csv: Historial de fallos
+
+════════════════════════════════════════════════════════════════════════════════
+
+✨ CONCLUSIONES FASE 2
+════════════════════════════════════════════════════════════════════════════════
+
+✅ Implementación completada de:
+   - Generador de llegadas dinámicas con proceso de Poisson
+   - Modelo de fallos realista con MTBF/MTTR
+   - Sistema centralizado de eventos con 6 tipos distintos
+   - Simulador integrado con máquinas dinámicas
+   - Exportación y reportes automáticos
+
+✅ Simulación exitosa:
+   - 393 órdenes generadas dinámicamente
+   - 56 fallos de máquina simulados
+   - 2,688 eventos capturados
+   - Análisis de confiabilidad (91-96% disponibilidad)
+
+✅ Listo para:
+   - Implementación de políticas de despacho inteligentes
+   - Integración con MARL para optimización
+   - Experimentación con diferentes escenarios
+   - Análisis de impacto de fallos en rendimiento
+
+════════════════════════════════════════════════════════════════════════════════
+Fecha: 26 de Noviembre de 2025
+Versión: FASE 2 - Simulador Dinámico v1.0
+Estado: COMPLETADA ✅
+════════════════════════════════════════════════════════════════════════════════

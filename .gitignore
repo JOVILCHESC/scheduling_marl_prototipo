@@ -1,0 +1,101 @@
+# ============================
+# 🐍 Python
+# ============================
+
+# Archivos compilados / temporales
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Archivos temporales / logs
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Archivos de configuración local
+*.env
+.env.*
+.envrc
+
+# Archivos de base de datos temporales
+*.sqlite3
+*.db
+*.sql
+
+# ============================
+# 🧠 Frameworks y librerías
+# ============================
+
+# Archivos generados por SPADE o SimPy
+logs/
+sim_output/
+results/
+*.csv
+*.json
+*.pkl
+*.xml
+
+# Modelos o pesos grandes
+models/
+checkpoints/
+runs/
+*.onnx
+*.pt
+*.h5
+
+# ============================
+# 🧮 Jupyter Notebooks
+# ============================
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# ============================
+# 🧰 IDEs y herramientas
+# ============================
+
+# VS Code
+.vscode/
+.history/
+.code-workspace
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# ============================
+# 💻 Sistema operativo
+# ============================
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ============================
+# 📦 Otros
+# ============================
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# ============================
+# 🔧 Archivos propios de pruebas
+# ============================
+test_*/ 
+temp_*/ 
+sandbox/
