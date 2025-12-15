@@ -150,4 +150,3 @@ scheduling_marl_prototipo/
 - **Gson**: JSON serialization en Java.
 - **requests/urllib**: Cliente HTTP Python (fallback a urllib si no hay requests).
 - **Taillard Benchmarks**: Instancias estándar de Job Shop (4x4 a 20x20).
-

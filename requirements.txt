@@ -5,3 +5,4 @@ pytz==2025.2
 simpy==4.1.1
 six==1.17.0
 tzdata==2025.2
+matplotlib==3.9.0
